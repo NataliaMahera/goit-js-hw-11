@@ -1,1 +1,1 @@
-import './js/gallery-search';
+import './js/gallery';
