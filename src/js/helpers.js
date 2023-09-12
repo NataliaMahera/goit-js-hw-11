@@ -12,7 +12,7 @@ export function renderMarkup(card) {
       }) => {
         return `<a class="gallery__link" href="${largeImageURL}">
         <div class="photo-card">
-    <img class="gallery-item__img" src="${webformatURL}" alt="${tags}" loading="lazy" width="300" />
+    <img class="gallery-item__img" src="${webformatURL}" alt="${tags}" loading="lazy"/>
     <div class="info">
       <p class="info-item">
         <b>Likes</b>
@@ -36,4 +36,13 @@ export function renderMarkup(card) {
       }
     )
     .join('');
+
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }

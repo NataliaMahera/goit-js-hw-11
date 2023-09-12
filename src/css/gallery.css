@@ -65,11 +65,21 @@
 }
 
 .gallery-item__img {
-  display: block;
+  /* display: block; */
+  width: 100%;
+  /* height: 35vh; */
   height: 30vh;
   -o-object-fit: cover;
      object-fit: cover;
 }
+
+
+/* .photo-img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  overflow: hidden;
+} */
 
 .info {
   padding: 10px;
