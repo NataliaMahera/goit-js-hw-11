@@ -10,7 +10,45 @@ let totalPages = 0;
 
 refs.form.addEventListener('submit', onSubmit);
 
-let observer = new IntersectionObserver(
+async function onSubmit(e) {
+  e.preventDefault();
+
+  const searchQuery = e.currentTarget.elements.searchQuery.value.trim();
+
+  if (!searchQuery) {
+    return Notify.warning('Please, fill the main field');
+  }
+
+  pixabayApi.q = searchQuery;
+  pixabayApi.page = 1;
+
+  try {
+    const { totalHits, hits } = await pixabayApi.getPhotos();
+
+    if (totalHits === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.');
+    } else {
+      Notify.success(`Hooray! We found: ${totalHits} images.`);
+
+      refs.list.innerHTML = renderMarkup(hits);
+      lightbox.refresh();
+    }
+
+    totalPages = Math.ceil(totalHits / 40);
+
+    if (totalPages === 1) {
+      return;
+    }
+    observer.observe(refs.targetEl);
+  } catch (error) {
+    onGetError();
+  } finally {
+    refs.form.reset();
+  }
+}
+
+const observer = new IntersectionObserver(
   (entries, observer) => {
     if (entries[0].isIntersecting) {
       loadMoreData();
@@ -23,59 +61,24 @@ let observer = new IntersectionObserver(
   }
 );
 
-function onSubmit(e) {
-  e.preventDefault();
+async function loadMoreData(e) {
+  const { hits } = await pixabayApi.getPhotos();
 
-  const searchQuery = e.currentTarget.elements.searchQuery.value.trim();
-
-  if (!searchQuery) {
-    return Notify.warning('Please, fill the main field');
-  }
-
-  pixabayApi.q = searchQuery;
-  pixabayApi.page = 1;
-
-  pixabayApi
-    .getPhotos()
-    .then(data => {
-      if (data.totalHits === 0) {
-        Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      } else {
-        Notify.success(`Hooray! We found: ${data.totalHits} images.`);
-        refs.list.innerHTML = renderMarkup(data.hits);
-        lightbox.refresh();
-      }
-
-      totalPages = Math.ceil(data.totalHits / 40);
-
-      if (totalPages === 1) {
-        return;
-      }
-      observer.observe(refs.targetEl);
-    })
-    .catch(onGetError)
-    .finally(() => refs.form.reset());
-}
-
-function loadMoreData(e) {
   pixabayApi.page += 1;
 
-  pixabayApi
-    .getPhotos()
-    .then(resp => {
-      if (pixabayApi.page >= totalPages) {
-        Notify.info("You've reached the end of search results");
-        observer.unobserve(refs.targetEl);
-        return;
-      }
-      refs.list.insertAdjacentHTML('beforeend', renderMarkup(resp.hits));
-    })
-    .catch(onGetError);
+  try {
+    if (pixabayApi.page === totalPages) {
+      Notify.info("You've reached the end of search results");
+      observer.unobserve(refs.targetEl);
+
+      return;
+    }
+    refs.list.insertAdjacentHTML('beforeend', renderMarkup(hits));
+  } catch (error) {
+    onGetError();
+  }
 }
 
-export function onGetError() {
-  // Loading.remove();
+function onGetError() {
   Notify.failure('Oops! Something went wrong! Try reloading the page!');
 }

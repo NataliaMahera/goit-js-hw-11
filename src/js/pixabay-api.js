@@ -7,19 +7,18 @@ export class PixabayAPI {
     this.page = 1;
     this.q = '';
   }
-  getPhotos() {
-    return axios
-      .get(`${this.#BASE_URL}`, {
-        params: {
-          key: this.#API_KEY,
-          q: this.q,
-          page: this.page,
-          per_page: this.per_page,
-          image_type: 'photo',
-          orientation: 'horizontal',
-          safesearch: true,
-        },
-      })
-      .then(resp => resp.data);
+  async getPhotos() {
+    const response = await axios.get(`${this.#BASE_URL}`, {
+      params: {
+        key: this.#API_KEY,
+        q: this.q,
+        page: this.page,
+        per_page: this.per_page,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: true,
+      },
+    });
+    return response.data;
   }
 }
