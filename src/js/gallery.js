@@ -27,7 +27,8 @@ async function onSubmit(e) {
 
     if (totalHits === 0) {
       Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.');
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
     } else {
       Notify.success(`Hooray! We found: ${totalHits} images.`);
 
@@ -62,9 +63,9 @@ const observer = new IntersectionObserver(
 );
 
 async function loadMoreData(e) {
-  const { hits } = await pixabayApi.getPhotos();
-
   pixabayApi.page += 1;
+
+  const { hits } = await pixabayApi.getPhotos();
 
   try {
     if (pixabayApi.page === totalPages) {
@@ -74,6 +75,7 @@ async function loadMoreData(e) {
       return;
     }
     refs.list.insertAdjacentHTML('beforeend', renderMarkup(hits));
+    lightbox.refresh();
   } catch (error) {
     onGetError();
   }
