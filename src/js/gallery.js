@@ -67,6 +67,9 @@ async function loadMoreData(e) {
 
   const { hits } = await pixabayApi.getPhotos();
 
+  refs.list.insertAdjacentHTML('beforeend', renderMarkup(hits));
+  lightbox.refresh();
+
   try {
     if (pixabayApi.page === totalPages) {
       Notify.info("You've reached the end of search results");
@@ -74,8 +77,6 @@ async function loadMoreData(e) {
 
       return;
     }
-    refs.list.insertAdjacentHTML('beforeend', renderMarkup(hits));
-    lightbox.refresh();
   } catch (error) {
     onGetError();
   }
