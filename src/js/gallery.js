@@ -1,6 +1,6 @@
 import { PixabayAPI } from './pixabay-api.js';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { lightbox } from './simpleLightbox.js';
+import { lightbox } from './SimpleLightbox.js';
 import refs from './refs.js';
 import { renderMarkup } from './helpers.js';
 import { smoothScroll } from './smoothScroll.js';
