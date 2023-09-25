@@ -3,6 +3,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { lightbox } from './SimpleLightbox.js';
 import refs from './refs.js';
 import { renderMarkup } from './helpers.js';
+import { smoothScroll } from './smoothScroll.js';
 
 const pixabayApi = new PixabayAPI(40);
 
@@ -68,6 +69,7 @@ async function loadMoreData(e) {
   const { hits } = await pixabayApi.getPhotos();
 
   refs.list.insertAdjacentHTML('beforeend', renderMarkup(hits));
+  smoothScroll();
   lightbox.refresh();
 
   try {
